@@ -307,11 +307,12 @@ public class SearchAndReplace
 	//{{{ getSearchMatcher() method
 	/**
 	 * Returns the current search string matcher.
-	 * @return a SearchMatcher or null if there is no search or if the matcher can match empty String
+	 * @return a SearchMatcher or null if there is no search or if
+	 * 		 		the matcher can match empty String
 	 *
 	 * @exception IllegalArgumentException if regular expression search
 	 * is enabled, the search string or replacement string is invalid
-	 * @since jEdit 4.1pre7
+	 * @since version 4.1pre7
 	 */
 	public static SearchMatcher getSearchMatcher()
 		throws Exception {
@@ -323,35 +324,12 @@ public class SearchAndReplace
 
 		if (regexp)
 		{
-			Pattern re = Pattern.compile(search, 
+			Pattern re = Pattern.compile(search,
 				PatternSearchMatcher.getFlag(ignoreCase));
 			matcher = new PatternSearchMatcher(re, ignoreCase);
 		}
-		else if(wholeWord)
-		{
-			String s = Pattern.quote(search);
-			String begin;
-			if (Character.isLetter(search.charAt(0)))
-			{
-				begin = "(?:\\b|^)";
-			}
-			else
-			{
-				begin = "(?:\\B|^)";
-			}
-			String end;
-			if (Character.isLetter(search.charAt(search.length()-1)))
-			{
-				end = "(?:\\b|$)";
-			}
-			else
-			{
-				end = "(?:\\B|$)";
-			}
-			matcher = new PatternSearchMatcher(begin+s+end, ignoreCase);
-		}
 		else
-			matcher = new BoyerMooreSearchMatcher(search, ignoreCase);
+			matcher = new BoyerMooreSearchMatcher(search, ignoreCase, wholeWord);
 
 		return matcher;
 	}
@@ -681,6 +659,9 @@ loop:		for(;;)
 				buffer.getLineOfOffset(start)) == start);
 			endOfLine = true;
 		}
+
+		String noWordSep = (String) buffer.getMode().getProperty("noWordSep");
+		matcher.setNoWordSep(noWordSep);
 
 		if(matcher.wholeWord)
 		{
@@ -1225,6 +1206,8 @@ loop:		while(path != null)
 			String noWordSep = buffer.getStringProperty("noWordSep");
 			matcher.setNoWordSep(noWordSep);
 		}
+		String wordBreakChars = (String) buffer.getMode().getProperty("wordBreakChars");
+		matcher.setNoWordSep(wordBreakChars);
 		int occurCount = 0;
 
 		boolean endOfLine = (buffer.getLineEndOffset(

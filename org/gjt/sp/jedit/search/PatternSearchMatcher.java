@@ -27,6 +27,22 @@ import java.util.regex.Pattern;
 import org.gjt.sp.util.ReverseCharSequence;
 
 /**
+	 * Creates a new regular expression string matcher.
+	 * @see java.util.regex.Pattern
+	 * @param re the compiled regex
+	 * @param ignoreCase <code>true</code> if you want to ignore case
+	 * @param wholeWord <code>true</code> to search for whole word only
+	 * @since version 4.5pre1
+	 */
+	public PatternSearchMatcher(
+		Pattern re, boolean ignoreCase, boolean wholeWord)
+	{
+		this(re.pattern(), ignoreCase);
+		this.re = re;
+		this.wholeWord = wholeWord;
+	}
+
+/**
  * A regular expression string matcher using java.util.regex.
  * @see java.util.regex.Pattern
  *
@@ -60,8 +76,7 @@ public class PatternSearchMatcher extends SearchMatcher
 	 */
 	public PatternSearchMatcher(Pattern re, boolean ignoreCase)
 	{
-		this(re.pattern(), ignoreCase);
-		this.re = re;
+		this(re, ignoreCase, false);
 	} //}}}
 
 	//{{{ nextMatch() method
@@ -167,6 +182,12 @@ public class PatternSearchMatcher extends SearchMatcher
 	
 			returnValue.start = _start;
 			returnValue.end = _end;
+			
+			if (wholeWord && !isWholeWord(text, _start, _end))
+			{
+				if (!match.find())
+					return null;
+			}
 
 			// For non-reversed searches, we break immediately
 			// to return the first match.  For reversed searches,
