@@ -247,8 +247,6 @@ class HyperSearchRequest extends Task
 		if(matcher.wholeWord)
 		{
 			buffer.setMode();
-			String noWordSep = buffer.getStringProperty("noWordSep");
-			matcher.setNoWordSep(noWordSep);
 		}
 		int resultCount = 0;
 		JEditTextArea textArea = jEdit.getActiveView().getTextArea();

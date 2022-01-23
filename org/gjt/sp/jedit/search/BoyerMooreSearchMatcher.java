@@ -32,15 +32,6 @@ package org.gjt.sp.jedit.search;
 public class BoyerMooreSearchMatcher extends SearchMatcher
 {
 	//{{{ BoyerMooreSearchMatcher constructors
-	/**
-	 * Creates a new string literal matcher.
-	 * @param pattern the search pattern
-	 * @param ignoreCase <code>true</code> if you want to ignore case
-	 */
-	public BoyerMooreSearchMatcher(String pattern, boolean ignoreCase)
-	{
-		this(pattern, ignoreCase, false);
-	}
 
 	/**
 	 * Creates a new string literal matcher.
@@ -49,7 +40,7 @@ public class BoyerMooreSearchMatcher extends SearchMatcher
 	 * @param wholeWord <code>true</code> to search for whole word only
 	 * @since 4.5pre1
 	 */
-	public BoyerMooreSearchMatcher(String pattern, boolean ignoreCase, boolean wholeWord)
+	public BoyerMooreSearchMatcher(String pattern, boolean ignoreCase)
 	{
 		this.pattern = pattern.toCharArray();
 		if(ignoreCase)
@@ -64,7 +55,6 @@ public class BoyerMooreSearchMatcher extends SearchMatcher
 		this.ignoreCase = ignoreCase;
 
 		pattern_end = this.pattern.length - 1;
-		this.wholeWord = wholeWord;
 	}
 	//}}}
 
@@ -84,22 +74,6 @@ public class BoyerMooreSearchMatcher extends SearchMatcher
 		{
 			returnValue.start = pos;
 			returnValue.end = pos + pattern.length;
-			int _end = returnValue.end;
-			if (wholeWord)
-			{
-				CharSequence subText;
-				while (!isWholeWord(text, returnValue.start, returnValue.end))
-				{
-					subText = text.subSequence(returnValue.end, text.length());
-					Match match = nextMatch(subText, start, end, firstTime, reverse);
-					// match == returnValue or null
-					if (match == null)
-						return null;
-					match.start += _end;
-					_end += match.end;
-					match.end = match.start + pattern.length;
-				}
-			}
 			return returnValue;
 		}
 	} //}}}

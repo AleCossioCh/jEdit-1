@@ -50,20 +50,6 @@ public class PatternSearchMatcher extends SearchMatcher
 		flags = getFlag(ignoreCase);
 	}
 
-	/**
-	 * Creates a new regular expression string matcher.
-	 * @see java.util.regex.Pattern
-	 * @param re the compiled regex
-	 * @param ignoreCase <code>true</code> if you want to ignore case
-	 * @param wholeWord <code>true</code> to search for whole word only
-	 * @since jEdit 4.5pre1
-	 */
-	public PatternSearchMatcher(Pattern re, boolean ignoreCase, boolean wholeWord)
-	{
-		this(re.pattern(), ignoreCase);
-		this.re = re;
-		this.wholeWord = wholeWord;
-	}
 	
 	/**
 	 * Creates a new regular expression already compiled.
@@ -74,7 +60,8 @@ public class PatternSearchMatcher extends SearchMatcher
 	 */
 	public PatternSearchMatcher(Pattern re, boolean ignoreCase)
 	{
-		this(re, ignoreCase, false);
+		this(re.pattern(), ignoreCase);
+		this.re = re;
 	} //}}}
 
 	//{{{ nextMatch() method
@@ -180,13 +167,6 @@ public class PatternSearchMatcher extends SearchMatcher
 	
 			returnValue.start = _start;
 			returnValue.end = _end;
-
-			if (wholeWord && !isWholeWord(text, _start, _end))
-			{
-				if (!match.find())
-					return null;
-				continue;
-			}
 
 			// For non-reversed searches, we break immediately
 			// to return the first match.  For reversed searches,

@@ -323,15 +323,40 @@ public class SearchAndReplace
 
 		if (regexp)
 		{
-			Pattern re = Pattern.compile(search,
+			Pattern re = Pattern.compile(search, 
 				PatternSearchMatcher.getFlag(ignoreCase));
-			matcher = new PatternSearchMatcher(re, ignoreCase, wholeWord);
+			matcher = new PatternSearchMatcher(re, ignoreCase);
+		}
+		else if(wholeWord)
+		{
+			String s = Pattern.quote(search);
+			String begin;
+			if (Character.isLetter(search.charAt(0)))
+			{
+				begin = "(?:\\b|^)";
+			}
+			else
+			{
+				begin = "(?:\\B|^)";
+			}
+			String end;
+			if (Character.isLetter(search.charAt(search.length()-1)))
+			{
+				end = "(?:\\b|$)";
+			}
+			else
+			{
+				end = "(?:\\B|$)";
+			}
+			matcher = new PatternSearchMatcher(begin+s+end, ignoreCase);
 		}
 		else
-			matcher = new BoyerMooreSearchMatcher(search, ignoreCase, wholeWord);
+			matcher = new BoyerMooreSearchMatcher(search, ignoreCase);
 
 		return matcher;
-	} //}}}
+	}
+
+ //}}}
 
 	//{{{ setSearchFileSet() method
 	/**
